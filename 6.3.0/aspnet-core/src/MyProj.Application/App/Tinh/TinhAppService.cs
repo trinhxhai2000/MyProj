@@ -18,15 +18,58 @@ namespace MyProj.App.Tinh
             _tinhRepos = tinhRepos;
         }
         [HttpPost]
-        public async Task<List<GetAllServerPagingOutputDto>> GetAllServerPaging(GetAllServerPagingInputDto input)
+        public async Task<List<TinhDTO>> GetAllServerPaging(TinhDTO input)
         {
             var query = from tinh in _tinhRepos.GetAll()
-                        select new GetAllServerPagingOutputDto
+                        select new TinhDTO
                         {
-                            MyProperty = tinh.MyProperty,
-                            MyProperty2 = tinh.MyProperty2,
+                            Id = tinh.Id,
+                            name = tinh.name,
+                            TTTU = tinh.TTTU,
                         };
             return await query.ToListAsync();
+        }
+
+        // POST: api/TodoItems
+        [HttpPost]
+        public void PostTodoItem(TinhDTO input)
+        {
+            _tinhRepos.Insert(
+                new TinhEntity
+                {
+                    name = input.name,
+                    TTTU = input.TTTU
+                }
+                );
+        }
+
+        [HttpPost]
+        public async Task<TinhDTO> GetTinh(TinhDTO input)
+        {
+            var query = from tinh in _tinhRepos.GetAll()
+                        where tinh.Id == input.Id
+                        select new TinhDTO()
+                        {
+                            name = tinh.name,
+                            TTTU = tinh.TTTU
+                        } ;
+
+            return await query.SingleAsync();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteTodoItem(long id)
+        {
+            var todoItem = await _context.TodoItems.FindAsync(id);
+            if (todoItem == null)
+            {
+                return NotFound();
+            }
+
+            _context.TodoItems.Remove(todoItem);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

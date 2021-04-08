@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyProj.EntityFrameworkCore;
 
 namespace MyProj.Migrations
 {
     [DbContext(typeof(MyProjDbContext))]
-    partial class MyProjDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210408041725_add-table-tinh_111731-08-04-21")]
+    partial class addtabletinh_111731080421
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

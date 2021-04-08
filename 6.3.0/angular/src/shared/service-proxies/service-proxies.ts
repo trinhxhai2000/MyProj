@@ -1038,7 +1038,7 @@ export class TinhServiceProxy {
      * @param body (optional)
      * @return Success
      */
-    getAllServerPaging(body: GetAllServerPagingInputDto | undefined): Observable<GetAllServerPagingOutputDto[]> {
+    getAllServerPaging(body: TinhDTO | undefined): Observable<TinhDTO[]> {
         let url_ = this.baseUrl + "/api/services/app/Tinh/GetAllServerPaging";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1061,14 +1061,14 @@ export class TinhServiceProxy {
                 try {
                     return this.processGetAllServerPaging(<any>response_);
                 } catch (e) {
-                    return <Observable<GetAllServerPagingOutputDto[]>><any>_observableThrow(e);
+                    return <Observable<TinhDTO[]>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<GetAllServerPagingOutputDto[]>><any>_observableThrow(response_);
+                return <Observable<TinhDTO[]>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetAllServerPaging(response: HttpResponseBase): Observable<GetAllServerPagingOutputDto[]> {
+    protected processGetAllServerPaging(response: HttpResponseBase): Observable<TinhDTO[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1082,7 +1082,7 @@ export class TinhServiceProxy {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200.push(GetAllServerPagingOutputDto.fromJS(item));
+                    result200.push(TinhDTO.fromJS(item));
             }
             return _observableOf(result200);
             }));
@@ -1091,7 +1091,115 @@ export class TinhServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<GetAllServerPagingOutputDto[]>(<any>null);
+        return _observableOf<TinhDTO[]>(<any>null);
+    }
+
+    /**
+     * @param body (optional)
+     * @return Success
+     */
+    postTodoItem(body: TinhDTO | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Tinh/PostTodoItem";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPostTodoItem(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPostTodoItem(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPostTodoItem(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param body (optional)
+     * @return Success
+     */
+    getTinh(body: TinhDTO | undefined): Observable<TinhDTO> {
+        let url_ = this.baseUrl + "/api/services/app/Tinh/GetTinh";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTinh(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTinh(<any>response_);
+                } catch (e) {
+                    return <Observable<TinhDTO>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<TinhDTO>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetTinh(response: HttpResponseBase): Observable<TinhDTO> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TinhDTO.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<TinhDTO>(<any>null);
     }
 }
 
@@ -3120,11 +3228,12 @@ export interface ITenantDtoPagedResultDto {
     items: TenantDto[] | undefined;
 }
 
-export class GetAllServerPagingInputDto implements IGetAllServerPagingInputDto {
-    myProperty: number;
-    myProperty2: number;
+export class TinhDTO implements ITinhDTO {
+    id: number;
+    name: string | undefined;
+    tttu: boolean;
 
-    constructor(data?: IGetAllServerPagingInputDto) {
+    constructor(data?: ITinhDTO) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3135,83 +3244,39 @@ export class GetAllServerPagingInputDto implements IGetAllServerPagingInputDto {
 
     init(_data?: any) {
         if (_data) {
-            this.myProperty = _data["myProperty"];
-            this.myProperty2 = _data["myProperty2"];
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.tttu = _data["tttu"];
         }
     }
 
-    static fromJS(data: any): GetAllServerPagingInputDto {
+    static fromJS(data: any): TinhDTO {
         data = typeof data === 'object' ? data : {};
-        let result = new GetAllServerPagingInputDto();
+        let result = new TinhDTO();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["myProperty"] = this.myProperty;
-        data["myProperty2"] = this.myProperty2;
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["tttu"] = this.tttu;
         return data;
     }
 
-    clone(): GetAllServerPagingInputDto {
+    clone(): TinhDTO {
         const json = this.toJSON();
-        let result = new GetAllServerPagingInputDto();
+        let result = new TinhDTO();
         result.init(json);
         return result;
     }
 }
 
-export interface IGetAllServerPagingInputDto {
-    myProperty: number;
-    myProperty2: number;
-}
-
-export class GetAllServerPagingOutputDto implements IGetAllServerPagingOutputDto {
-    myProperty: number;
-    myProperty2: number;
-
-    constructor(data?: IGetAllServerPagingOutputDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.myProperty = _data["myProperty"];
-            this.myProperty2 = _data["myProperty2"];
-        }
-    }
-
-    static fromJS(data: any): GetAllServerPagingOutputDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetAllServerPagingOutputDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["myProperty"] = this.myProperty;
-        data["myProperty2"] = this.myProperty2;
-        return data;
-    }
-
-    clone(): GetAllServerPagingOutputDto {
-        const json = this.toJSON();
-        let result = new GetAllServerPagingOutputDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IGetAllServerPagingOutputDto {
-    myProperty: number;
-    myProperty2: number;
+export interface ITinhDTO {
+    id: number;
+    name: string | undefined;
+    tttu: boolean;
 }
 
 export class AuthenticateModel implements IAuthenticateModel {

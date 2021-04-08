@@ -6,14 +6,11 @@ using System.Threading.Tasks;
 
 namespace MyProj.App.Tinh.Dto
 {
-    public class GetAllServerPagingInputDto
+    public class TinhDTO
+
     {
-        public int MyProperty { get; set; }
-        public int MyProperty2 { get; set; }
-    }
-    public class GetAllServerPagingOutputDto
-    {
-        public int MyProperty { get; set; }
-        public int MyProperty2 { get; set; }
+        public int Id { get; set; }
+        public string name { get; set; }
+        public Boolean TTTU { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace MyProj.App
     [Table("Tinh")]
     public class TinhEntity : Entity
     {
-        public int MyProperty { get; set; }
-        public int MyProperty2 { get; set; }
+        public string name { get; set; }
+        public Boolean TTTU { get; set; }
     }
 }

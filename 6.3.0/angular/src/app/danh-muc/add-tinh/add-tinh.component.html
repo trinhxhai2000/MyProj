@@ -1,0 +1,38 @@
+<p>add-tinh works!</p>
+<h2>Thêm tỉnh : </h2>
+
+{{curTinh | json }}
+<form nz-form sub #addingForm="ngForm" (submit)="onSubmit(addingForm)" >
+    <nz-form-item>
+      <nz-form-label [nzSpan]="5">Tên tỉnh</nz-form-label>
+      <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Input is required">
+        <input
+            nz-input [(ngModel)]="curTinh.name" name="name" required
+
+        />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">Trực thuộc trung ương </nz-form-label>
+        <nz-form-control [nzSpan]="12" >
+            <nz-switch
+                [(ngModel)]="curTinh.TTTU"
+                name = "tttu"
+            >
+
+            </nz-switch>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item >
+        <nz-form-control [nzSpan]="12" [nzOffset]="5">
+            <button
+                nz-button nzType="primary"
+                type="submit"
+            >
+            Thêm
+            </button>
+          </nz-form-control>
+    </nz-form-item>
+
+

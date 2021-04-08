@@ -23,7 +23,7 @@ import { ChangePasswordComponent } from './users/change-password/change-password
                     { path: 'about', component: AboutComponent, canActivate: [AppRouteGuard] },
                     { path: 'update-password', component: ChangePasswordComponent, canActivate: [AppRouteGuard] },
                     { path: 'danh-muc', loadChildren: ()=> import('./danh-muc/danh-muc.module').then(x=>x.DanhMucModule)
-                },
+                    },
                 ]
             }
         ])
