@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyProj.EntityFrameworkCore;
 
 namespace MyProj.Migrations
 {
     [DbContext(typeof(MyProjDbContext))]
-    partial class MyProjDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210409075200_modify_otm_relationship")]
+    partial class modify_otm_relationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1333,7 +1335,10 @@ namespace MyProj.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("TinhEntityId")
+                    b.Property<int?>("TinhEntityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TinhId")
                         .HasColumnType("int");
 
                     b.Property<string>("name")
@@ -1808,9 +1813,7 @@ namespace MyProj.Migrations
                 {
                     b.HasOne("MyProj.App.TinhEntity", "TinhEntity")
                         .WithMany("HuyenEntitys")
-                        .HasForeignKey("TinhEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TinhEntityId");
 
                     b.Navigation("TinhEntity");
                 });

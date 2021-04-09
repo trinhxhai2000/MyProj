@@ -1,12 +1,14 @@
-<p>tinh-detail works!</p>
-{{tinh.name}}
-{{tinh | json }}
+<p>add-huyen works!</p>
+<h2>Thêm huyện : </h2>
+{{addingForm.value | json}}
+<br>
+{{ curHuyen | json }}
 <form nz-form sub #addingForm="ngForm" (submit)="onSubmit(addingForm)" >
     <nz-form-item>
-      <nz-form-label [nzSpan]="5">Tên tỉnh</nz-form-label>
+      <nz-form-label [nzSpan]="5">Tên huyện</nz-form-label>
       <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Input is required">
         <input
-            nz-input [(ngModel)]="tinh.name" name="name" required
+            nz-input [(ngModel)]="curHuyen.name" name="name" required
 
         />
       </nz-form-control>
@@ -14,12 +16,11 @@
     <nz-form-item>
         <nz-form-label [nzSpan]="5">Trực thuộc trung ương </nz-form-label>
         <nz-form-control [nzSpan]="12" >
-            <nz-switch
-                [(ngModel)]="tinh.tttu"
-                name = "tttu"
-            >
 
-            </nz-switch>
+            <nz-select [(ngModel)]="curHuyen.tinhId"  name="tinhId">
+                <nz-option *ngFor="let tinh of tinhs" nzValue="{{tinh.tinhId}}" nzLabel="{{tinh.name}}"></nz-option>
+              </nz-select>
+
         </nz-form-control>
     </nz-form-item>
 
@@ -29,7 +30,9 @@
                 nz-button nzType="primary"
                 type="submit"
             >
-            Update
+            Thêm
             </button>
           </nz-form-control>
     </nz-form-item>
+
+

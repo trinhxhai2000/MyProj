@@ -8,6 +8,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
 namespace MyProj.App.Tinh
 {
     public class TinhAppService: MyProjAppServiceBase
@@ -18,58 +24,63 @@ namespace MyProj.App.Tinh
             _tinhRepos = tinhRepos;
         }
         [HttpPost]
-        public async Task<List<TinhDTO>> GetAllServerPaging(TinhDTO input)
+        public async Task<List<TinhDTO>> GetAllTinh()
         {
             var query = from tinh in _tinhRepos.GetAll()
-                        select new TinhDTO
-                        {
-                            Id = tinh.Id,
-                            name = tinh.name,
-                            TTTU = tinh.TTTU,
-                        };
+                        select new TinhDTO(tinh);
             return await query.ToListAsync();
         }
 
         // POST: api/TodoItems
         [HttpPost]
-        public void PostTodoItem(TinhDTO input)
+        public async Task<ActionResult<TinhDTO>> PostTodoItem(TinhDTO input)
         {
-            _tinhRepos.Insert(
+            // does id is exist ? latter
+           await _tinhRepos.InsertAsync(
                 new TinhEntity
                 {
                     name = input.name,
                     TTTU = input.TTTU
                 }
                 );
+            return new OkResult();
         }
 
         [HttpPost]
-        public async Task<TinhDTO> GetTinh(TinhDTO input)
+        public async Task<ActionResult<TinhDTO>> GetTinh(int id)
         {
             var query = from tinh in _tinhRepos.GetAll()
-                        where tinh.Id == input.Id
-                        select new TinhDTO()
-                        {
-                            name = tinh.name,
-                            TTTU = tinh.TTTU
-                        } ;
-
-            return await query.SingleAsync();
-        }
-
-        [HttpDelete]
-        public async Task<IActionResult> DeleteTodoItem(long id)
-        {
-            var todoItem = await _context.TodoItems.FindAsync(id);
-            if (todoItem == null)
+                        select tinh;
+            var curTinh = await query.FirstOrDefaultAsync(tinh => tinh.Id == id);
+            if (curTinh == null)
             {
-                return NotFound();
+                return new NotFoundResult();
             }
 
-            _context.TodoItems.Remove(todoItem);
-            await _context.SaveChangesAsync();
+            return new TinhDTO(curTinh);
+        }
+        [HttpDelete]
 
-            return NoContent();
+        public async Task<ActionResult<TinhDTO>> DeleteTinh(TinhIdInput input)
+        {
+            //CheckDeletePermission();
+            var tinh = await _tinhRepos.FirstOrDefaultAsync(tinh => tinh.Id == input.id);
+            if (tinh == null) return new NotFoundResult();
+            await _tinhRepos.DeleteAsync(tinh);
+            return new OkResult();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<TinhDTO>> UpdateTinh(TinhDTO tinh)
+        {
+            //CheckDeletePermission();
+            var curTinh = await _tinhRepos.FirstOrDefaultAsync(t => t.Id == tinh.TinhId);
+            if (curTinh == null) return new NotFoundResult();
+            curTinh.name = tinh.name;
+            curTinh.TTTU = tinh.TTTU;
+            await _tinhRepos.UpdateAsync(curTinh);
+            return new OkResult();
+
         }
     }
 }

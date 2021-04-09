@@ -1,25 +1,27 @@
-<p>tinh-detail works!</p>
-{{tinh.name}}
-{{tinh | json }}
+<p>huyen-detail works!</p>
+{{huyen | json }}
 <form nz-form sub #addingForm="ngForm" (submit)="onSubmit(addingForm)" >
     <nz-form-item>
       <nz-form-label [nzSpan]="5">Tên tỉnh</nz-form-label>
       <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Input is required">
         <input
-            nz-input [(ngModel)]="tinh.name" name="name" required
-
+            nz-input [(ngModel)]="huyen.name" name="name" required
         />
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label [nzSpan]="5">Trực thuộc trung ương </nz-form-label>
+        <nz-form-label [nzSpan]="5"> Tỉnh </nz-form-label>
         <nz-form-control [nzSpan]="12" >
-            <nz-switch
-                [(ngModel)]="tinh.tttu"
-                name = "tttu"
-            >
+            <!--
+            <nz-select name="tinhId" nzShowSearch nzAllowClear nzPlaceHolder="Select a person" [(ngModel)]="curTinhId" >
+                <nz-option *ngFor="let tinh of tinhs" nzLabel="{{tinh.name}}" nzValue="{{tinh.id}}"></nz-option>
+            </nz-select>
+            -->
+            <nz-select [(ngModel)]="huyen.tinhId" name="tinhId">
+                <nz-option *ngFor="let tinh of tinhs" nzValue="{{tinh.tinhId}}" nzLabel="{{tinh.name}}"></nz-option>
+              </nz-select>
 
-            </nz-switch>
+
         </nz-form-control>
     </nz-form-item>
 

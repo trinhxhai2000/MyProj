@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyProj.EntityFrameworkCore;
 
 namespace MyProj.Migrations
 {
     [DbContext(typeof(MyProjDbContext))]
-    partial class MyProjDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210409043016_112709042021")]
+    partial class _112709042021
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1326,14 +1328,14 @@ namespace MyProj.Migrations
                     b.ToTable("AbpWebhookSubscriptions");
                 });
 
-            modelBuilder.Entity("MyProj.App.Huyen.HuyenEntity", b =>
+            modelBuilder.Entity("MyProj.App.HuyenEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("TinhEntityId")
+                    b.Property<int?>("TinhEntityId")
                         .HasColumnType("int");
 
                     b.Property<string>("name")
@@ -1804,13 +1806,11 @@ namespace MyProj.Migrations
                     b.Navigation("WebhookEvent");
                 });
 
-            modelBuilder.Entity("MyProj.App.Huyen.HuyenEntity", b =>
+            modelBuilder.Entity("MyProj.App.HuyenEntity", b =>
                 {
                     b.HasOne("MyProj.App.TinhEntity", "TinhEntity")
-                        .WithMany("HuyenEntitys")
-                        .HasForeignKey("TinhEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("TinhEntityId");
 
                     b.Navigation("TinhEntity");
                 });
@@ -1931,11 +1931,6 @@ namespace MyProj.Migrations
             modelBuilder.Entity("Abp.Organizations.OrganizationUnit", b =>
                 {
                     b.Navigation("Children");
-                });
-
-            modelBuilder.Entity("MyProj.App.TinhEntity", b =>
-                {
-                    b.Navigation("HuyenEntitys");
                 });
 
             modelBuilder.Entity("MyProj.Authorization.Roles.Role", b =>

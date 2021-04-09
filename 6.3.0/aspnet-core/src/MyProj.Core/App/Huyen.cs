@@ -5,17 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MyProj.App.Huyen;
 
-namespace MyProj.App
+namespace MyProj.App.Huyen
 {
-    [Table("Tinh")]
-    public class TinhEntity : Entity
+    [Table("Huyen")]
+    public class HuyenEntity : Entity
     {
         public int Id { get; set; }
         public string name { get; set; }
-        public Boolean TTTU { get; set; }
-        public ICollection<HuyenEntity> HuyenEntitys { get; set; }
-
+        public int TinhEntityId { get; set; }
+        public TinhEntity TinhEntity { get; set; }
     }
 }

@@ -12,13 +12,21 @@ import { AddTinhComponent } from './add-tinh/add-tinh.component';
 import { FormsModule } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { HuyenComponent } from './huyen/huyen.component';
+import { HuyenDetailComponent } from './huyen-detail/huyen-detail.component';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { AddHuyenComponent } from './add-huyen/add-huyen.component';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 
 @NgModule({
   declarations: [
     TinhComponent,
     TinhDetailComponent,
     ListDataComponent,
-    AddTinhComponent
+    AddTinhComponent,
+    HuyenComponent,
+    HuyenDetailComponent,
+    AddHuyenComponent
   ],
   imports: [
     CommonModule,
@@ -27,7 +35,9 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
     NzListModule,
     FormsModule,
     NzFormModule,
-    NzSwitchModule
+    NzSwitchModule,
+    NzSelectModule,
+    NzPageHeaderModule
   ]
 })
 export class DanhMucModule {

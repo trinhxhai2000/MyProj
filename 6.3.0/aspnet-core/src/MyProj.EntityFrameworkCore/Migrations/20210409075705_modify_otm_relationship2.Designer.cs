@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyProj.EntityFrameworkCore;
 
 namespace MyProj.Migrations
 {
     [DbContext(typeof(MyProjDbContext))]
-    partial class MyProjDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210409075705_modify_otm_relationship2")]
+    partial class modify_otm_relationship2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1355,6 +1357,9 @@ namespace MyProj.Migrations
 
                     b.Property<bool>("TTTU")
                         .HasColumnType("bit");
+
+                    b.Property<int>("TinhEntityId")
+                        .HasColumnType("int");
 
                     b.Property<string>("name")
                         .HasColumnType("nvarchar(max)");
