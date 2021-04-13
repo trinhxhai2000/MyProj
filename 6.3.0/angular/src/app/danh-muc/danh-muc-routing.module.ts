@@ -11,11 +11,6 @@ import { HuyenDetailComponent } from './huyen-detail/huyen-detail.component';
 const routes: Routes = [
 
   {
-    path: 'meh',
-    component:TinhComponent,
-    data: { permission: 'Pages.DanhMuc.Tinh'}, canActivate: [AppRouteGuard]
-  },
-  {
     path: 'tinh',
     component:ListDataComponent,
     data: { permission: 'Pages.DanhMuc.Tinh'}, canActivate: [AppRouteGuard]

@@ -1,3 +1,58 @@
+<form nz-form sub [formGroup]="addingForm" (ngSubmit)="formSubmit$.next()" >
+    <nz-form-item>
+      <nz-form-label [nzSpan]="5">Tên tỉnh</nz-form-label>
+      <nz-form-control nzHasFeedback [nzSpan]="12" [nzErrorTip]="nameErrorTpl" >
+        <input nz-input formControlName="name" />
+      </nz-form-control>
+
+    <ng-template #nameErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')">
+            Tên bắt đầu bằng các kí tự ('a-z, 'A'-'Z') và có 2 kí tự trở lên
+        </ng-container>
+        <ng-container *ngIf="control.hasError('tinhNameExist')">
+            Tên tỉnh đã tồn tại !
+        </ng-container>
+      </ng-template>
+
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">Trực thuộc trung ương </nz-form-label>
+        <nz-form-control [nzSpan]="12" >
+            <nz-switch
+                formControlName="tttu"
+            >
+            </nz-switch>
+        </nz-form-control>
+    </nz-form-item>
+
+
+
+    <nz-form-item >
+        <nz-form-control [nzSpan]="12" [nzOffset]="5">
+            <button nz-button nzType="primary"
+                type="submit"
+                [disabled]="addingForm.invalid"
+            >
+            Thêm
+            </button>
+          </nz-form-control>
+    </nz-form-item>
+
+<!--
+{{addingForm.value | json}}
+<pre>{{ addingForm.get("name")?.errors | json }}</pre>
+<pre>{{ addingForm.get('name').hasError('tinhNameExist') }}</pre>
+<small
+        *ngIf="addingForm.get('name').hasError('pattern')"
+>
+        <h1>Meh</h1>
+</small>
+
+-->
+
+<!-- Template form
+
 <p>add-tinh works!</p>
 <h2>Thêm tỉnh : </h2>
 
@@ -36,3 +91,4 @@
     </nz-form-item>
 
 
+-->

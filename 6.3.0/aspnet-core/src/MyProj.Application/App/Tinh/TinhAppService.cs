@@ -82,5 +82,29 @@ namespace MyProj.App.Tinh
             return new OkResult();
 
         }
+        [HttpPost]
+        public async Task<ActionResult<bool>> tinhNameExist(string name)
+        {
+            //CheckDeletePermission();
+            var curTinh = await _tinhRepos.FirstOrDefaultAsync(t => t.name == name);
+            return (curTinh != null);
+
+        }
+        //[HttpPost]
+        //public async Task< ActionResult<List<TinhDTO>> > getPage(getPageInp input)
+        //{
+        //    CheckDeletePermission();
+        //later: check if idx page runout of current amount
+
+
+        //    int numberOfObjectsPerPage = 10;
+        //    var queryResultPage = await _tinhRepos
+        //     .Skip(input.numPage * (input.idx - 1))
+        //      .Take(input.numPage);
+        //    return queryResultPage;
+
+        //}
+
+
     }
 }

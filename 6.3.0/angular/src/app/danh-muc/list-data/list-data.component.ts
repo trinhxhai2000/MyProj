@@ -5,7 +5,6 @@ import {  Router } from '@angular/router';
   selector: 'app-list-data',
   templateUrl: './list-data.component.html',
   styleUrls: ['./list-data.component.css'],
-  providers: [ROUTER_PROVIDERS]
 })
 export class ListDataComponent implements OnInit {
 
@@ -20,7 +19,7 @@ export class ListDataComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadData()
+    // this.loadData()
   }
 
   loadData(){
@@ -30,6 +29,7 @@ export class ListDataComponent implements OnInit {
         this.tinhs = result;
     });
   }
+
   selectTinh(id: number){
     console.log("list-data : selecting tinh ", id);
     const input = new GetHuyenByTinhIdDto();

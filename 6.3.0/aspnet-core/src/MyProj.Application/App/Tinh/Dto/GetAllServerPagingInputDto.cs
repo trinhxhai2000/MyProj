@@ -25,4 +25,9 @@ namespace MyProj.App.Tinh.Dto
     {
         public int id { get; set; }
     }
+    public class getPageInp
+    {
+        public int idx { get; set; }
+        public int numPage { get; set; }
+    }
 }

@@ -1,23 +1,17 @@
-<p>add-huyen works!</p>
-<h2>Thêm huyện : </h2>
-{{addingForm.value | json}}
-<br>
-{{ curHuyen | json }}
-<form nz-form sub #addingForm="ngForm" (submit)="onSubmit(addingForm)" >
+<form nz-form sub [formGroup]="addingForm" (ngSubmit)="formSubmit$.next()" >
     <nz-form-item>
       <nz-form-label [nzSpan]="5">Tên huyện</nz-form-label>
-      <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Input is required">
+      <nz-form-control nzHasFeedback [nzSpan]="12" [nzErrorTip]="nameErrorTpl" >
         <input
-            nz-input [(ngModel)]="curHuyen.name" name="name" required
-
+            nz-input formControlName="name" required
         />
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label [nzSpan]="5">Trực thuộc trung ương </nz-form-label>
-        <nz-form-control [nzSpan]="12" >
+        <nz-form-label [nzSpan]="5">Tỉnh </nz-form-label>
+        <nz-form-control [nzSpan]="12" [nzErrorTip]="nameErrorTpl" >
 
-            <nz-select [(ngModel)]="curHuyen.tinhId"  name="tinhId">
+            <nz-select [(ngModel)]="curTinhId"  formControlName="tinhId">
                 <nz-option *ngFor="let tinh of tinhs" nzValue="{{tinh.tinhId}}" nzLabel="{{tinh.name}}"></nz-option>
               </nz-select>
 
@@ -25,14 +19,29 @@
     </nz-form-item>
 
     <nz-form-item >
-        <nz-form-control [nzSpan]="12" [nzOffset]="5">
+        <nz-form-control [nzSpan]="12" [nzOffset]="5" [nzErrorTip]="nameErrorTpl">
             <button
                 nz-button nzType="primary"
                 type="submit"
+                [disabled]="addingForm.invalid"
             >
             Thêm
             </button>
           </nz-form-control>
     </nz-form-item>
 
+</form>
+
+<ng-template #nameErrorTpl let-control>
+  <ng-container *ngIf="control.hasError('huyenNameExistInTinh')">
+      Huyện này đã có trong tỉnh đã chọn !
+  </ng-container>
+  <ng-container *ngIf="control.hasError('pattern')">
+    Tên bắt đầu bằng các kí tự ('a-z, 'A'-'Z') và có 2 kí tự trở lên
+  </ng-container>
+</ng-template>
+
+<div *ngIf="addingForm.hasError('huyenNameExistInTinh')">
+  Huyện này đã có trong tỉnh đã chọn !
+</div>
 

@@ -112,5 +112,15 @@ namespace MyProj.App.Huyen
             await _huyenRepos.UpdateAsync(curHuyen);
             return new OkResult();
         }
+
+
+        [HttpPost]
+        public async Task<ActionResult<bool>> huyenNameExistInTinh(int tinhId, string huyenName)
+        {
+            //CheckDeletePermission();
+            var curHuyen = _huyenRepos.FirstOrDefault(h => h.name == huyenName && h.TinhEntityId == tinhId);
+
+            return (curHuyen != null) ;
+        }
     }
 }

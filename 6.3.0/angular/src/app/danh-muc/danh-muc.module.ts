@@ -17,6 +17,8 @@ import { HuyenDetailComponent } from './huyen-detail/huyen-detail.component';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { AddHuyenComponent } from './add-huyen/add-huyen.component';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { ReactiveFormsModule } from "@angular/forms";
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,9 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
     NzFormModule,
     NzSwitchModule,
     NzSelectModule,
-    NzPageHeaderModule
+    NzPageHeaderModule,
+    ReactiveFormsModule,
+    NzTableModule
   ]
 })
 export class DanhMucModule {

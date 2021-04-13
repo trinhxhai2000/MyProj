@@ -1,11 +1,19 @@
 
+<app-tinh>
+</app-tinh>
+
+<!--
 <div class="site-page-header-ghost-wrapper">
-  <nz-page-header nzBackIcon [nzGhost]="false">
+  <nz-page-header [nzGhost]="false" [nzTitle]="'Tỉnh-Huyện'" [nzSubtitle]="''" >
     <nz-page-header-title>Title</nz-page-header-title>
     <nz-page-header-subtitle>This is a subtitle</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <button nz-button nzType="default" (click)="goAddTinh()"> Thêm Tỉnh </button>
-      <button nz-button nzType="default"> Thêm huyện </button>
+      <button nz-button nzType="default"
+        [routerLink]="'../add-tinh'"
+      > Thêm Tỉnh </button>
+      <button nz-button nzType="default"
+        [routerLink]="'../add-huyen'"
+      > Thêm huyện </button>
     </nz-page-header-extra>
   </nz-page-header>
 </div>
@@ -40,5 +48,5 @@
         {{ item.name }}
       </li>
     </ul>
-<p>list-data works!</p>
-{{tinhs|json}}
+
+-->
