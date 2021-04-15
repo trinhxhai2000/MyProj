@@ -12,16 +12,9 @@
     <nz-form-item>
         <nz-form-label [nzSpan]="5"> Tỉnh </nz-form-label>
         <nz-form-control [nzSpan]="12" >
-            <!--
-            <nz-select name="tinhId" nzShowSearch nzAllowClear nzPlaceHolder="Select a person" [(ngModel)]="curTinhId" >
-                <nz-option *ngFor="let tinh of tinhs" nzLabel="{{tinh.name}}" nzValue="{{tinh.id}}"></nz-option>
-            </nz-select>
-            -->
             <nz-select [(ngModel)]="huyen.tinhId" name="tinhId">
                 <nz-option *ngFor="let tinh of tinhs" nzValue="{{tinh.tinhId}}" nzLabel="{{tinh.name}}"></nz-option>
               </nz-select>
-
-
         </nz-form-control>
     </nz-form-item>
 

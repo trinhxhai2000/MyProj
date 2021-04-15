@@ -6,7 +6,7 @@ import { Location } from '@angular/common';
 import { NoWhitespaceValidator } from '../validators/no-whitespaces.validator';
 
 import { Observable, of, Subject, timer } from "rxjs";
-import { delay, filter, map, startWith, switchMap, take, tap } from "rxjs/operators";
+import { debounceTime, delay, distinctUntilChanged, filter, map, startWith, switchMap, take, tap } from "rxjs/operators";
 
 @Component({
   selector: 'app-add-huyen',
@@ -108,6 +108,8 @@ export class AddHuyenComponent implements OnInit {
     const huyenName = control.value;
     if(tinhId == null || huyenName == null) return of(null);
     return this.huyenService.huyenNameExistInTinh(tinhId,huyenName).pipe(
+      debounceTime(800),
+      distinctUntilChanged(),
       map(result => {
         if (!result) {
           if (this.addingForm.controls["tinhId"].hasError('huyenNameExistInTinh')){
@@ -129,18 +131,21 @@ export class AddHuyenComponent implements OnInit {
     const huyenName = this.addingForm.value.name;
     if(tinhId == null || huyenName == null ) return of(null);
     return this.huyenService.huyenNameExistInTinh(tinhId,huyenName).pipe(
-      map(result => {
+      map(
+        result => {
         if (!result) {
           if (this.addingForm.controls["name"].hasError('huyenNameExistInTinh')){
                this.addingForm.controls["name"].updateValueAndValidity();
           }
           return null;
         }else
-        return {
-          huyenNameExistInTinh: true
-        };
-      })
+          return {
+            huyenNameExistInTinh: true
+          };
+      }
+      )
     )
+
   }
 
 }

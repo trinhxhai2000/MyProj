@@ -1,6 +1,9 @@
+list data
 
-<app-tinh>
+<app-tinh (onTinhSelectEmitter)="onTinhSelect($event)">
 </app-tinh>
+<app-huyen [tinhId]="tinhId" >
+</app-huyen>
 
 <!--
 <div class="site-page-header-ghost-wrapper">

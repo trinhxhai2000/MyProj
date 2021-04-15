@@ -3,7 +3,7 @@ import { TinhDTO , TinhServiceProxy } from '@shared/service-proxies/service-prox
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormBuilder,FormGroup, AbstractControl, ValidationErrors, Validators } from '@angular/forms'
-import { NoWhitespaceValidator } from '../validators/no-whitespaces.validator';
+import { NoWhitespaceValidator, IsUserIdFreeValidator } from '../validators/no-whitespaces.validator';
 
 import { Observable, of, Subject, timer } from "rxjs";
 import { delay, filter, map, startWith, switchMap, take, tap } from "rxjs/operators";
@@ -46,7 +46,7 @@ export class AddTinhComponent implements OnInit {
        Validators.compose([
           Validators.pattern(/^[a-zA-Za-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+[a-zA-Za-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ 0-9]*$/i),
        ]),
-       this.validateTinhNameFromAPI.bind(this)
+       [IsUserIdFreeValidator.createValidator(this.tinhService)]
       ],
 
       tttu: false,
@@ -83,19 +83,22 @@ export class AddTinhComponent implements OnInit {
     this.location.back();
   }
 
-  validateTinhNameFromAPI(
-    control: AbstractControl
-  ): Observable<ValidationErrors | null> {
-    return this.tinhService.tinhNameExist(control.value).pipe(
-      map(result => {
-        if (!result) {
-          return null;
-        }
-        return {
-          tinhNameExist: true
-        };
-      })
-    );
-  }
+  // validateTinhNameFromAPI(
+  //   control: AbstractControl
+  // ): Observable<ValidationErrors | null> {
+
+  //   return this.tinhService.tinhNameExist(control.value).pipe(
+  //     map(result => {
+  //       if (!result) {
+  //         return null;
+  //       }
+  //       return {
+  //         tinhNameExist: true
+  //       };
+  //     })
+  //   );
+
+
+  // }
 
 }

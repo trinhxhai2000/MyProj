@@ -38,4 +38,17 @@ namespace MyProj.App.Huyen.Dto
     {
         public int id { get; set; }
     }
+    public class getHuyenPageInp
+    {
+        public int tinhId { get; set; }
+        public int idx { get; set; }
+        public int numPage { get; set; }
+        
+    }
+    public class getHuyenPageOut
+    {
+        public int total { get; set; }
+        public List<HuyenDTO> huyens { get; set; }
+
+    }
 }

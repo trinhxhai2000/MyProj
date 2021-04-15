@@ -90,20 +90,30 @@ namespace MyProj.App.Tinh
             return (curTinh != null);
 
         }
-        //[HttpPost]
-        //public async Task< ActionResult<List<TinhDTO>> > getPage(getPageInp input)
-        //{
-        //    CheckDeletePermission();
-        //later: check if idx page runout of current amount
+        [HttpPost]
+        public async Task<ActionResult<getTinhPageOut>> getTinhPage(getTinhPageInp input)
+        {
+            //    CheckDeletePermission();
+            //later: check if idx page runout of current amount => fine with no err
+            var res = new getTinhPageOut();
+            
+            var queryResultPage = await _tinhRepos.GetAll()
+                .Skip(input.numPage * (input.idx - 1))
+                .Take(input.numPage).Select(
+                tinh =>
+                new TinhDTO
+                {
+                    TinhId = tinh.Id,
+                    name = tinh.name,
+                    TTTU = tinh.TTTU,
+                }
+               
+                ).ToListAsync();
+            res.total = _tinhRepos.Count();
+            res.tinhs = queryResultPage;
 
-
-        //    int numberOfObjectsPerPage = 10;
-        //    var queryResultPage = await _tinhRepos
-        //     .Skip(input.numPage * (input.idx - 1))
-        //      .Take(input.numPage);
-        //    return queryResultPage;
-
-        //}
+            return res;
+        }
 
 
     }

@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { NgForm } from '@angular/forms';
 
-import {TinhServiceProxy,TinhDTO, HuyenDTO, HuyenIdInput} from '@shared/service-proxies/service-proxies';
+import {TinhServiceProxy,TinhDTO} from '@shared/service-proxies/service-proxies';
 
 
 @Component({

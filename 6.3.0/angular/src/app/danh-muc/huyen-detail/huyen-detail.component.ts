@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { NgForm } from '@angular/forms';
 
-import {HuyenDTO, HuyenIdInput, HuyenServiceProxy, ModifingHuyenInput } from '@shared/service-proxies/service-proxies';
+import {HuyenDTO, HuyenServiceProxy, ModifingHuyenInput } from '@shared/service-proxies/service-proxies';
 import {TinhServiceProxy, TinhDTO} from '@shared/service-proxies/service-proxies';
+
 @Component({
   selector: 'app-huyen-detail',
   templateUrl: './huyen-detail.component.html',
@@ -19,6 +20,7 @@ export class HuyenDetailComponent implements OnInit {
     private location: Location
   ) { }
 
+  @Input() huyenId:number
   huyen: ModifingHuyenInput = new ModifingHuyenInput()
 
   tinhs: TinhDTO[] = []
@@ -29,15 +31,14 @@ export class HuyenDetailComponent implements OnInit {
   }
   loadData(){
     // load current Huyen
-    const id: number = +this.route.snapshot.paramMap.get('id');
-    const input = new HuyenIdInput();
-    input.id = id;
-    this.huyenService.getHuyen(input).subscribe(
+    // const id: number = +this.route.snapshot.paramMap.get('id');
+    // console.log("Huyen id: ", this.huyenId)
+    this.huyenService.getHuyen(this.huyenId).subscribe(
       result=>{
         this.huyen.name = result.name;
         this.huyen.huyenId = result.id
         this.huyen.tinhId = result.tinhDto.tinhId;
-        console.log(result)
+
       }
     );
     // load list Tinh
@@ -59,12 +60,12 @@ export class HuyenDetailComponent implements OnInit {
     input.tinhId = form.value.tinhId
 
     this.huyenService.updateHuyen(input).subscribe(
-      () => this.goBack()
+      // () => this.goBack()
     )
 
   }
-  goBack(): void {
-    this.location.back();
-  }
+  // goBack(): void {
+  //   this.location.back();
+  // }
 
 }

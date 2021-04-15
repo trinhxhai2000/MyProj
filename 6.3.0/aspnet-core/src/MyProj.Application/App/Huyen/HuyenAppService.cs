@@ -70,14 +70,14 @@ namespace MyProj.App.Huyen
         }
 
         [HttpPost]
-        public async Task<ActionResult<HuyenDTO>> GetHuyen(HuyenIdInput huyenIdInput)
+        public async Task<ActionResult<HuyenDTO>> GetHuyen(int id)
         {
 
             var query = from huyen in _huyenRepos.GetAll() 
                               select huyen;
 
             var listhuyen = await query.ToListAsync();
-            HuyenEntity curHuyen = listhuyen.FirstOrDefault(huyen => huyen.Id == huyenIdInput.id);
+            HuyenEntity curHuyen = listhuyen.FirstOrDefault(huyen => huyen.Id == id);
             if (curHuyen == null)
             {
                 return new NotFoundResult();
@@ -121,6 +121,33 @@ namespace MyProj.App.Huyen
             var curHuyen = _huyenRepos.FirstOrDefault(h => h.name == huyenName && h.TinhEntityId == tinhId);
 
             return (curHuyen != null) ;
+        }
+        [HttpPost]
+        public async Task<ActionResult<getHuyenPageOut>> getHuyenPage(getHuyenPageInp input)
+        {
+
+            var tinh = await _tinhRepos.FirstOrDefaultAsync(tinh => tinh.Id == input.tinhId);
+            if (tinh == null)
+            {
+                return new NotFoundResult();
+            }
+
+            var res = new getHuyenPageOut();
+
+            var query_count = from h in _huyenRepos.GetAll()
+                        where h.TinhEntityId == input.tinhId
+                        select h;
+
+            res.total = await query_count.CountAsync();
+
+            var query = query_count.Skip(input.numPage * (input.idx - 1))
+                        .Take(input.numPage)
+                        .Select(
+                            h => new HuyenDTO(h)
+                        );
+
+            res.huyens = await query.ToListAsync();
+            return res;
         }
     }
 }

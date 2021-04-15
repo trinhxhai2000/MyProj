@@ -25,9 +25,15 @@ namespace MyProj.App.Tinh.Dto
     {
         public int id { get; set; }
     }
-    public class getPageInp
+    public class getTinhPageInp
     {
         public int idx { get; set; }
         public int numPage { get; set; }
+    }
+    public class getTinhPageOut
+    {
+        public int total { get; set; }
+        public List<TinhDTO> tinhs { get; set; }
+
     }
 }

@@ -1,13 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { TinhDTO, TinhServiceProxy, HuyenServiceProxy, HuyenDTO, GetHuyenByTinhIdDto} from '@shared/service-proxies/service-proxies';
-export interface Data {
-  id: number;
-  name: string;
-  age: number;
-  address: string;
-  disabled: boolean;
-}
-
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { TinhDTO, TinhServiceProxy, GetTinhPageInp, GetHuyenPageOut} from '@shared/service-proxies/service-proxies';
+import { NzTableQueryParams } from 'ng-zorro-antd/table';
+import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
 @Component({
   selector: 'app-tinh',
   templateUrl: './tinh.component.html',
@@ -15,77 +9,75 @@ export interface Data {
 })
 export class TinhComponent implements OnInit {
 
-  constructor(
-    private tinhService: TinhServiceProxy
-  ) { }
 
-  checked = false;
-  loading = false;
-  indeterminate = false;
-  listOfData: ReadonlyArray<TinhDTO> = [];
-  listOfCurrentPageData: ReadonlyArray<Data> = [];
-  setOfCheckedId = new Set<number>();
+  @Output() onTinhSelectEmitter = new EventEmitter<number>();
+  total = 1;
+  curTinhs: TinhDTO[] = [];
+  loading = true;
+  pageSize = 10;
+  pageIndex = 1;
 
-  updateCheckedSet(id: number, checked: boolean): void {
-    if (checked) {
-      this.setOfCheckedId.add(id);
-    } else {
-      this.setOfCheckedId.delete(id);
-    }
-  }
 
-  onCurrentPageDataChange(listOfCurrentPageData: ReadonlyArray<Data>): void {
-
-    this.listOfCurrentPageData = listOfCurrentPageData;
-    this.refreshCheckedStatus();
-  }
-
-  refreshCheckedStatus(): void {
-    const listOfEnabledData = this.listOfCurrentPageData.filter(({ disabled }) => !disabled);
-    this.checked = listOfEnabledData.every(({ id }) => this.setOfCheckedId.has(id));
-    this.indeterminate = listOfEnabledData.some(({ id }) => this.setOfCheckedId.has(id)) && !this.checked;
-  }
-
-  onItemChecked(id: number, checked: boolean): void {
-    this.updateCheckedSet(id, checked);
-    this.refreshCheckedStatus();
-  }
-
-  onAllChecked(checked: boolean): void {
-    this.listOfCurrentPageData.filter(({ disabled }) => !disabled).forEach(({ id }) => this.updateCheckedSet(id, checked));
-    this.refreshCheckedStatus();
-  }
-
-  sendRequest(): void {
+  loadDataFromServer(
+    pageIndex: number,
+    pageSize: number,
+  ): void {
     this.loading = true;
-    const requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.id));
-    console.log(requestData);
-    setTimeout(() => {
-      this.setOfCheckedId.clear();
-      this.refreshCheckedStatus();
-      this.loading = false;
-    }, 1000);
+    const inp = new GetTinhPageInp();
+    inp.idx = pageIndex;
+    inp.numPage = pageSize;
+    this.tinhService.getTinhPage(inp).subscribe(
+      res => {
+        this.loading = false;
+        this.total = res.total; // mock the total data here
+        this.curTinhs = res.tinhs;
+    });
   }
+
+  onQueryParamsChange(params: NzTableQueryParams): void {
+    console.log(params);
+    const { pageSize, pageIndex, sort, filter } = params;
+    const currentSort = sort.find(item => item.value !== null);
+    this.loadDataFromServer(pageIndex, pageSize);
+  }
+
+  constructor(
+    private tinhService: TinhServiceProxy,
+    private modalService: NzModalService
+    ) {}
 
   ngOnInit(): void {
-    this.tinhService.getAllTinh().subscribe(
-      tinhs=>this.listOfData = tinhs
-    )
-
-    // this.listOfData = new Array(100).fill(0).map((_, index) => {
-    //   return {
-    //     id: index,
-    //     name: `Edward King ${index}`,
-    //     age: 32,
-    //     address: `London, Park Lane no. ${index}`,
-    //     disabled: index % 2 === 0
-    //   };
-    // });
-
-
-
-
+    this.loadDataFromServer(this.pageIndex, this.pageSize);
   }
+  onTinhSelect($event,tinhid){
+    // console.log("Select ", tinhid)
+    this.onTinhSelectEmitter.emit(tinhid);
+  }
+  deleteTinh(id: number){
+    console.log(id);
+    this.tinhService.getTinh(id).subscribe(
+      tinh => {
+
+        console.log(tinh.tinhId);
+        this.modalService.confirm({
+          nzTitle: "Bạn chắc chắn muốn xóa tỉnh " + tinh.name +"  ?",
+          nzContent: '<b style="color: red;"> Khi xóa tỉnh tất cả các huyện thuộc tỉnh cũng sẽ bị xóa !! </b>',
+          nzOkText: 'Xóa',
+          nzOkType: 'primary',
+          nzOkDanger: true,
+          nzOnOk: () =>{
+            this.tinhService.deleteTinh(tinh.tinhId).subscribe();
+          },
+          nzCancelText: 'No',
+          nzOnCancel: () => console.log('Cancel delete tinh !')
+        }).afterClose.subscribe(
+          ()=>{
+            this.loadDataFromServer(this.pageIndex, this.pageSize);
+          }
+        );
 
 
+      }
+    )
+  }
 }

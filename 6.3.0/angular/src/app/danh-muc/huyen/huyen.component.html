@@ -1,1 +1,33 @@
-<p>huyen works!</p>
+<nz-table
+      nzShowSizeChanger
+      [nzData]="curHuyens"
+      [nzFrontPagination]="false"
+      [nzPageSizeOptions]="[5,10,15]"
+      [nzLoading]="loading"
+      [nzTotal]="total"
+      [(nzPageSize)]="pageSize"
+      [(nzPageIndex)]="pageIndex"
+      (nzQueryParams)="onQueryParamsChange($event)"
+    >
+      <thead>
+        <tr>
+          <th nzColumnKey="Id" >Id</th>
+          <th nzColumnKey="name" >Tên huyện</th>
+          <th >Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let huyen of curHuyens">
+          <td>{{ huyen.id }}</td>
+          <td>{{ huyen.name }}</td>
+          <td [nzRight]="fixedColumn" >
+            <a (click)="editHuyen(huyen.id)" >edit</a>
+            <nz-divider nzType="vertical"></nz-divider>
+            <button nz-button nzType="primary" nzDanger (click)="deleteHuyen(huyen.id)">Xóa</button>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <ng-template #editHuyenModel>
+        <h1> Edit huyen </h1>
+    </ng-template>

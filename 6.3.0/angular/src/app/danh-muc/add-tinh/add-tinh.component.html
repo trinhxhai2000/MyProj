@@ -1,7 +1,7 @@
 <form nz-form sub [formGroup]="addingForm" (ngSubmit)="formSubmit$.next()" >
     <nz-form-item>
       <nz-form-label [nzSpan]="5">Tên tỉnh</nz-form-label>
-      <nz-form-control nzHasFeedback [nzSpan]="12" [nzErrorTip]="nameErrorTpl" >
+      <nz-form-control [nzSpan]="12" [nzErrorTip]="nameErrorTpl" >
         <input nz-input formControlName="name" />
       </nz-form-control>
 
@@ -39,10 +39,12 @@
           </nz-form-control>
     </nz-form-item>
 
+<pre>{{ addingForm.get("name")?.errors | json }}</pre>
+
+<pre>{{ addingForm.get('name').hasError('tinhNameExist') }}</pre>
+
 <!--
 {{addingForm.value | json}}
-<pre>{{ addingForm.get("name")?.errors | json }}</pre>
-<pre>{{ addingForm.get('name').hasError('tinhNameExist') }}</pre>
 <small
         *ngIf="addingForm.get('name').hasError('pattern')"
 >

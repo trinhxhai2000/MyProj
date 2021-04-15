@@ -1,38 +1,32 @@
-<div class="send-request">
-    <button nz-button nzType="primary" [disabled]="setOfCheckedId.size === 0" [nzLoading]="loading" (click)="sendRequest()">
-      Send Request
-    </button>
-    <span>Selected {{ setOfCheckedId.size }} items</span>
-  </div>
-  <nz-table
-    #rowSelectionTable
-    nzShowPagination
-    [nzPageIndex]="2"
-    [nzPageSize]="5"
-    nzShowSizeChanger
-    [nzData]="listOfData"
-    (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
-
-  >
-    <thead>
-      <tr>
-        <th [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)"></th>
-        <th>ID</th>
-        <th>Tên Tỉnh</th>
-        <th>Trực thuộc trung ương</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let data of rowSelectionTable.data">
-        <td
-          [nzChecked]="setOfCheckedId.has(data.id)"
-          [nzDisabled]="data.disabled"
-          (nzCheckedChange)="onItemChecked(data.id, $event)"
-        ></td>
-        <td>{{ data.tinhId }}</td>
-        <td>{{ data.name }}</td>
-        <td>{{ data.tttu }}</td>
-      </tr>
-    </tbody>
-
-  </nz-table>
+<nz-table
+      nzShowSizeChanger
+      [nzData]="curTinhs"
+      [nzFrontPagination]="false"
+      [nzPageSizeOptions]="[5,10,15]"
+      [nzLoading]="loading"
+      [nzTotal]="total"
+      [(nzPageSize)]="pageSize"
+      [(nzPageIndex)]="pageIndex"
+      (nzQueryParams)="onQueryParamsChange($event)"
+    >
+      <thead>
+        <tr>
+          <th nzColumnKey="Id" >Id</th>
+          <th nzColumnKey="name" >Tỉnh</th>
+          <th nzColumnKey="TTTU" >TTTU</th>
+          <th >Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let tinh of curTinhs" (click)="onTinhSelect($event,tinh.tinhId)">
+          <td>{{ tinh.tinhId }}</td>
+          <td>{{ tinh.name }}</td>
+          <td>{{ tinh.tttu }}</td>
+          <td [nzRight]="fixedColumn" >
+            <a routerLink="./{{tinh.tinhId}}">Edit</a>
+            <nz-divider nzType="vertical"></nz-divider>
+            <button nz-button nzType="primary" nzDanger (click)="deleteTinh(tinh.tinhId)">Xóa</button>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>

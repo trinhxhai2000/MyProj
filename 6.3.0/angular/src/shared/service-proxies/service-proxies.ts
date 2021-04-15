@@ -28,7 +28,7 @@ export class AccountServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     isTenantAvailable(body: IsTenantAvailableInput | undefined): Observable<IsTenantAvailableOutput> {
@@ -84,7 +84,7 @@ export class AccountServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     register(body: RegisterInput | undefined): Observable<RegisterOutput> {
@@ -152,7 +152,7 @@ export class ConfigurationServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     changeUiTheme(body: ChangeUiThemeInput | undefined): Observable<void> {
@@ -216,7 +216,7 @@ export class HuyenServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     getAllHuyenByTinhId(body: GetHuyenByTinhIdDto | undefined): Observable<HuyenDTO[]> {
@@ -276,7 +276,7 @@ export class HuyenServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     addHuyen(body: ModifingHuyenInput | undefined): Observable<HuyenDTO> {
@@ -332,21 +332,21 @@ export class HuyenServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param id (optional)
      * @return Success
      */
-    getHuyen(body: HuyenIdInput | undefined): Observable<HuyenDTO> {
-        let url_ = this.baseUrl + "/api/services/app/Huyen/GetHuyen";
+    getHuyen(id: number | undefined): Observable<HuyenDTO> {
+        let url_ = this.baseUrl + "/api/services/app/Huyen/GetHuyen?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_ : any = {
-            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json-patch+json",
                 "Accept": "text/plain"
             })
         };
@@ -388,7 +388,7 @@ export class HuyenServiceProxy {
     }
 
     /**
-     * @param id (optional) 
+     * @param id (optional)
      * @return Success
      */
     deleteHuyen(id: number | undefined): Observable<HuyenDTO> {
@@ -444,7 +444,7 @@ export class HuyenServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateHuyen(body: ModifingHuyenInput | undefined): Observable<TinhDTO> {
@@ -500,8 +500,8 @@ export class HuyenServiceProxy {
     }
 
     /**
-     * @param tinhId (optional) 
-     * @param huyenName (optional) 
+     * @param tinhId (optional)
+     * @param huyenName (optional)
      * @return Success
      */
     huyenNameExistInTinh(tinhId: number | undefined, huyenName: string | null | undefined): Observable<boolean> {
@@ -557,6 +557,62 @@ export class HuyenServiceProxy {
         }
         return _observableOf<boolean>(<any>null);
     }
+
+    /**
+     * @param body (optional)
+     * @return Success
+     */
+    getHuyenPage(body: GetHuyenPageInp | undefined): Observable<GetHuyenPageOut> {
+        let url_ = this.baseUrl + "/api/services/app/Huyen/getHuyenPage";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetHuyenPage(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetHuyenPage(<any>response_);
+                } catch (e) {
+                    return <Observable<GetHuyenPageOut>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetHuyenPageOut>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetHuyenPage(response: HttpResponseBase): Observable<GetHuyenPageOut> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetHuyenPageOut.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetHuyenPageOut>(<any>null);
+    }
 }
 
 @Injectable()
@@ -571,7 +627,7 @@ export class RoleServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     create(body: CreateRoleDto | undefined): Observable<RoleDto> {
@@ -627,7 +683,7 @@ export class RoleServiceProxy {
     }
 
     /**
-     * @param permission (optional) 
+     * @param permission (optional)
      * @return Success
      */
     getRoles(permission: string | null | undefined): Observable<RoleListDtoListResultDto> {
@@ -681,7 +737,7 @@ export class RoleServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     update(body: RoleDto | undefined): Observable<RoleDto> {
@@ -737,7 +793,7 @@ export class RoleServiceProxy {
     }
 
     /**
-     * @param id (optional) 
+     * @param id (optional)
      * @return Success
      */
     delete(id: number | undefined): Observable<void> {
@@ -840,7 +896,7 @@ export class RoleServiceProxy {
     }
 
     /**
-     * @param id (optional) 
+     * @param id (optional)
      * @return Success
      */
     getRoleForEdit(id: number | undefined): Observable<GetRoleForEditOutput> {
@@ -896,7 +952,7 @@ export class RoleServiceProxy {
     }
 
     /**
-     * @param id (optional) 
+     * @param id (optional)
      * @return Success
      */
     get(id: number | undefined): Observable<RoleDto> {
@@ -952,9 +1008,9 @@ export class RoleServiceProxy {
     }
 
     /**
-     * @param keyword (optional) 
-     * @param skipCount (optional) 
-     * @param maxResultCount (optional) 
+     * @param keyword (optional)
+     * @param skipCount (optional)
+     * @param maxResultCount (optional)
      * @return Success
      */
     getAll(keyword: string | null | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<RoleDtoPagedResultDto> {
@@ -1091,7 +1147,7 @@ export class TenantServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     create(body: CreateTenantDto | undefined): Observable<TenantDto> {
@@ -1147,7 +1203,7 @@ export class TenantServiceProxy {
     }
 
     /**
-     * @param id (optional) 
+     * @param id (optional)
      * @return Success
      */
     delete(id: number | undefined): Observable<void> {
@@ -1199,7 +1255,7 @@ export class TenantServiceProxy {
     }
 
     /**
-     * @param id (optional) 
+     * @param id (optional)
      * @return Success
      */
     get(id: number | undefined): Observable<TenantDto> {
@@ -1255,10 +1311,10 @@ export class TenantServiceProxy {
     }
 
     /**
-     * @param keyword (optional) 
-     * @param isActive (optional) 
-     * @param skipCount (optional) 
-     * @param maxResultCount (optional) 
+     * @param keyword (optional)
+     * @param isActive (optional)
+     * @param skipCount (optional)
+     * @param maxResultCount (optional)
      * @return Success
      */
     getAll(keyword: string | null | undefined, isActive: boolean | null | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<TenantDtoPagedResultDto> {
@@ -1322,7 +1378,7 @@ export class TenantServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     update(body: TenantDto | undefined): Observable<TenantDto> {
@@ -1445,7 +1501,7 @@ export class TinhServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     postTodoItem(body: TinhDTO | undefined): Observable<TinhDTO> {
@@ -1501,7 +1557,7 @@ export class TinhServiceProxy {
     }
 
     /**
-     * @param id (optional) 
+     * @param id (optional)
      * @return Success
      */
     getTinh(id: number | undefined): Observable<TinhDTO> {
@@ -1557,7 +1613,7 @@ export class TinhServiceProxy {
     }
 
     /**
-     * @param id (optional) 
+     * @param id (optional)
      * @return Success
      */
     deleteTinh(id: number | undefined): Observable<TinhDTO> {
@@ -1613,7 +1669,7 @@ export class TinhServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateTinh(body: TinhDTO | undefined): Observable<TinhDTO> {
@@ -1669,10 +1725,11 @@ export class TinhServiceProxy {
     }
 
     /**
-     * @param name (optional) 
+     * @param name (optional)
      * @return Success
      */
     tinhNameExist(name: string | null | undefined): Observable<boolean> {
+        console.log("Tinh Name Exist ?" , name);
         let url_ = this.baseUrl + "/api/services/app/Tinh/tinhNameExist?";
         if (name !== undefined && name !== null)
             url_ += "name=" + encodeURIComponent("" + name) + "&";
@@ -1721,6 +1778,62 @@ export class TinhServiceProxy {
         }
         return _observableOf<boolean>(<any>null);
     }
+
+    /**
+     * @param body (optional)
+     * @return Success
+     */
+    getTinhPage(body: GetTinhPageInp | undefined): Observable<GetTinhPageOut> {
+        let url_ = this.baseUrl + "/api/services/app/Tinh/getTinhPage";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTinhPage(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTinhPage(<any>response_);
+                } catch (e) {
+                    return <Observable<GetTinhPageOut>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetTinhPageOut>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetTinhPage(response: HttpResponseBase): Observable<GetTinhPageOut> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetTinhPageOut.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetTinhPageOut>(<any>null);
+    }
 }
 
 @Injectable()
@@ -1735,7 +1848,7 @@ export class TokenAuthServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     authenticate(body: AuthenticateModel | undefined): Observable<AuthenticateResultModel> {
@@ -1846,7 +1959,7 @@ export class TokenAuthServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     externalAuthenticate(body: ExternalAuthenticateModel | undefined): Observable<ExternalAuthenticateResultModel> {
@@ -1914,7 +2027,7 @@ export class UserServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     create(body: CreateUserDto | undefined): Observable<UserDto> {
@@ -1970,7 +2083,7 @@ export class UserServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     update(body: UserDto | undefined): Observable<UserDto> {
@@ -2026,7 +2139,7 @@ export class UserServiceProxy {
     }
 
     /**
-     * @param id (optional) 
+     * @param id (optional)
      * @return Success
      */
     delete(id: number | undefined): Observable<void> {
@@ -2078,7 +2191,7 @@ export class UserServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     activate(body: Int64EntityDto | undefined): Observable<void> {
@@ -2130,7 +2243,7 @@ export class UserServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     deActivate(body: Int64EntityDto | undefined): Observable<void> {
@@ -2233,7 +2346,7 @@ export class UserServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     changeLanguage(body: ChangeUserLanguageDto | undefined): Observable<void> {
@@ -2285,7 +2398,7 @@ export class UserServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     changePassword(body: ChangePasswordDto | undefined): Observable<boolean> {
@@ -2341,7 +2454,7 @@ export class UserServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     resetPassword(body: ResetPasswordDto | undefined): Observable<boolean> {
@@ -2397,7 +2510,7 @@ export class UserServiceProxy {
     }
 
     /**
-     * @param id (optional) 
+     * @param id (optional)
      * @return Success
      */
     get(id: number | undefined): Observable<UserDto> {
@@ -2453,10 +2566,10 @@ export class UserServiceProxy {
     }
 
     /**
-     * @param keyword (optional) 
-     * @param isActive (optional) 
-     * @param skipCount (optional) 
-     * @param maxResultCount (optional) 
+     * @param keyword (optional)
+     * @param isActive (optional)
+     * @param skipCount (optional)
+     * @param maxResultCount (optional)
      * @return Success
      */
     getAll(keyword: string | null | undefined, isActive: boolean | null | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<UserDtoPagedResultDto> {
@@ -2548,7 +2661,7 @@ export class IsTenantAvailableInput implements IIsTenantAvailableInput {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["tenancyName"] = this.tenancyName;
-        return data; 
+        return data;
     }
 
     clone(): IsTenantAvailableInput {
@@ -2600,7 +2713,7 @@ export class IsTenantAvailableOutput implements IIsTenantAvailableOutput {
         data = typeof data === 'object' ? data : {};
         data["state"] = this.state;
         data["tenantId"] = this.tenantId;
-        return data; 
+        return data;
     }
 
     clone(): IsTenantAvailableOutput {
@@ -2659,7 +2772,7 @@ export class RegisterInput implements IRegisterInput {
         data["emailAddress"] = this.emailAddress;
         data["password"] = this.password;
         data["captchaResponse"] = this.captchaResponse;
-        return data; 
+        return data;
     }
 
     clone(): RegisterInput {
@@ -2707,7 +2820,7 @@ export class RegisterOutput implements IRegisterOutput {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["canLogin"] = this.canLogin;
-        return data; 
+        return data;
     }
 
     clone(): RegisterOutput {
@@ -2750,7 +2863,7 @@ export class ChangeUiThemeInput implements IChangeUiThemeInput {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["theme"] = this.theme;
-        return data; 
+        return data;
     }
 
     clone(): ChangeUiThemeInput {
@@ -2793,7 +2906,7 @@ export class GetHuyenByTinhIdDto implements IGetHuyenByTinhIdDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["tinhId"] = this.tinhId;
-        return data; 
+        return data;
     }
 
     clone(): GetHuyenByTinhIdDto {
@@ -2842,7 +2955,7 @@ export class TinhDTO implements ITinhDTO {
         data["tinhId"] = this.tinhId;
         data["name"] = this.name;
         data["tttu"] = this.tttu;
-        return data; 
+        return data;
     }
 
     clone(): TinhDTO {
@@ -2893,7 +3006,7 @@ export class HuyenDTO implements IHuyenDTO {
         data["id"] = this.id;
         data["name"] = this.name;
         data["tinhDto"] = this.tinhDto ? this.tinhDto.toJSON() : <any>undefined;
-        return data; 
+        return data;
     }
 
     clone(): HuyenDTO {
@@ -2944,7 +3057,7 @@ export class ModifingHuyenInput implements IModifingHuyenInput {
         data["huyenId"] = this.huyenId;
         data["name"] = this.name;
         data["tinhId"] = this.tinhId;
-        return data; 
+        return data;
     }
 
     clone(): ModifingHuyenInput {
@@ -2961,10 +3074,12 @@ export interface IModifingHuyenInput {
     tinhId: number;
 }
 
-export class HuyenIdInput implements IHuyenIdInput {
-    id: number;
+export class GetHuyenPageInp implements IGetHuyenPageInp {
+    tinhId: number;
+    idx: number;
+    numPage: number;
 
-    constructor(data?: IHuyenIdInput) {
+    constructor(data?: IGetHuyenPageInp) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2975,33 +3090,94 @@ export class HuyenIdInput implements IHuyenIdInput {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
+            this.tinhId = _data["tinhId"];
+            this.idx = _data["idx"];
+            this.numPage = _data["numPage"];
         }
     }
 
-    static fromJS(data: any): HuyenIdInput {
+    static fromJS(data: any): GetHuyenPageInp {
         data = typeof data === 'object' ? data : {};
-        let result = new HuyenIdInput();
+        let result = new GetHuyenPageInp();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        return data; 
+        data["tinhId"] = this.tinhId;
+        data["idx"] = this.idx;
+        data["numPage"] = this.numPage;
+        return data;
     }
 
-    clone(): HuyenIdInput {
+    clone(): GetHuyenPageInp {
         const json = this.toJSON();
-        let result = new HuyenIdInput();
+        let result = new GetHuyenPageInp();
         result.init(json);
         return result;
     }
 }
 
-export interface IHuyenIdInput {
-    id: number;
+export interface IGetHuyenPageInp {
+    tinhId: number;
+    idx: number;
+    numPage: number;
+}
+
+export class GetHuyenPageOut implements IGetHuyenPageOut {
+    total: number;
+    huyens: HuyenDTO[] | undefined;
+
+    constructor(data?: IGetHuyenPageOut) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.total = _data["total"];
+            if (Array.isArray(_data["huyens"])) {
+                this.huyens = [] as any;
+                for (let item of _data["huyens"])
+                    this.huyens.push(HuyenDTO.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): GetHuyenPageOut {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetHuyenPageOut();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["total"] = this.total;
+        if (Array.isArray(this.huyens)) {
+            data["huyens"] = [];
+            for (let item of this.huyens)
+                data["huyens"].push(item.toJSON());
+        }
+        return data;
+    }
+
+    clone(): GetHuyenPageOut {
+        const json = this.toJSON();
+        let result = new GetHuyenPageOut();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IGetHuyenPageOut {
+    total: number;
+    huyens: HuyenDTO[] | undefined;
 }
 
 export class CreateRoleDto implements ICreateRoleDto {
@@ -3052,7 +3228,7 @@ export class CreateRoleDto implements ICreateRoleDto {
             for (let item of this.grantedPermissions)
                 data["grantedPermissions"].push(item);
         }
-        return data; 
+        return data;
     }
 
     clone(): CreateRoleDto {
@@ -3122,7 +3298,7 @@ export class RoleDto implements IRoleDto {
                 data["grantedPermissions"].push(item);
         }
         data["id"] = this.id;
-        return data; 
+        return data;
     }
 
     clone(): RoleDto {
@@ -3185,7 +3361,7 @@ export class RoleListDto implements IRoleListDto {
         data["isDefault"] = this.isDefault;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
         data["id"] = this.id;
-        return data; 
+        return data;
     }
 
     clone(): RoleListDto {
@@ -3241,7 +3417,7 @@ export class RoleListDtoListResultDto implements IRoleListDtoListResultDto {
             for (let item of this.items)
                 data["items"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 
     clone(): RoleListDtoListResultDto {
@@ -3293,7 +3469,7 @@ export class PermissionDto implements IPermissionDto {
         data["displayName"] = this.displayName;
         data["description"] = this.description;
         data["id"] = this.id;
-        return data; 
+        return data;
     }
 
     clone(): PermissionDto {
@@ -3347,7 +3523,7 @@ export class PermissionDtoListResultDto implements IPermissionDtoListResultDto {
             for (let item of this.items)
                 data["items"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 
     clone(): PermissionDtoListResultDto {
@@ -3402,7 +3578,7 @@ export class RoleEditDto implements IRoleEditDto {
         data["description"] = this.description;
         data["isStatic"] = this.isStatic;
         data["id"] = this.id;
-        return data; 
+        return data;
     }
 
     clone(): RoleEditDto {
@@ -3455,7 +3631,7 @@ export class FlatPermissionDto implements IFlatPermissionDto {
         data["name"] = this.name;
         data["displayName"] = this.displayName;
         data["description"] = this.description;
-        return data; 
+        return data;
     }
 
     clone(): FlatPermissionDto {
@@ -3522,7 +3698,7 @@ export class GetRoleForEditOutput implements IGetRoleForEditOutput {
             for (let item of this.grantedPermissionNames)
                 data["grantedPermissionNames"].push(item);
         }
-        return data; 
+        return data;
     }
 
     clone(): GetRoleForEditOutput {
@@ -3578,7 +3754,7 @@ export class RoleDtoPagedResultDto implements IRoleDtoPagedResultDto {
             for (let item of this.items)
                 data["items"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 
     clone(): RoleDtoPagedResultDto {
@@ -3640,7 +3816,7 @@ export class ApplicationInfoDto implements IApplicationInfoDto {
                     data["features"][key] = this.features[key];
             }
         }
-        return data; 
+        return data;
     }
 
     clone(): ApplicationInfoDto {
@@ -3697,7 +3873,7 @@ export class UserLoginInfoDto implements IUserLoginInfoDto {
         data["userName"] = this.userName;
         data["emailAddress"] = this.emailAddress;
         data["id"] = this.id;
-        return data; 
+        return data;
     }
 
     clone(): UserLoginInfoDto {
@@ -3750,7 +3926,7 @@ export class TenantLoginInfoDto implements ITenantLoginInfoDto {
         data["tenancyName"] = this.tenancyName;
         data["name"] = this.name;
         data["id"] = this.id;
-        return data; 
+        return data;
     }
 
     clone(): TenantLoginInfoDto {
@@ -3801,7 +3977,7 @@ export class GetCurrentLoginInformationsOutput implements IGetCurrentLoginInform
         data["application"] = this.application ? this.application.toJSON() : <any>undefined;
         data["user"] = this.user ? this.user.toJSON() : <any>undefined;
         data["tenant"] = this.tenant ? this.tenant.toJSON() : <any>undefined;
-        return data; 
+        return data;
     }
 
     clone(): GetCurrentLoginInformationsOutput {
@@ -3858,7 +4034,7 @@ export class CreateTenantDto implements ICreateTenantDto {
         data["adminEmailAddress"] = this.adminEmailAddress;
         data["connectionString"] = this.connectionString;
         data["isActive"] = this.isActive;
-        return data; 
+        return data;
     }
 
     clone(): CreateTenantDto {
@@ -3914,7 +4090,7 @@ export class TenantDto implements ITenantDto {
         data["name"] = this.name;
         data["isActive"] = this.isActive;
         data["id"] = this.id;
-        return data; 
+        return data;
     }
 
     clone(): TenantDto {
@@ -3971,7 +4147,7 @@ export class TenantDtoPagedResultDto implements ITenantDtoPagedResultDto {
             for (let item of this.items)
                 data["items"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 
     clone(): TenantDtoPagedResultDto {
@@ -3985,6 +4161,108 @@ export class TenantDtoPagedResultDto implements ITenantDtoPagedResultDto {
 export interface ITenantDtoPagedResultDto {
     totalCount: number;
     items: TenantDto[] | undefined;
+}
+
+export class GetTinhPageInp implements IGetTinhPageInp {
+    idx: number;
+    numPage: number;
+
+    constructor(data?: IGetTinhPageInp) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.idx = _data["idx"];
+            this.numPage = _data["numPage"];
+        }
+    }
+
+    static fromJS(data: any): GetTinhPageInp {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetTinhPageInp();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["idx"] = this.idx;
+        data["numPage"] = this.numPage;
+        return data;
+    }
+
+    clone(): GetTinhPageInp {
+        const json = this.toJSON();
+        let result = new GetTinhPageInp();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IGetTinhPageInp {
+    idx: number;
+    numPage: number;
+}
+
+export class GetTinhPageOut implements IGetTinhPageOut {
+    total: number;
+    tinhs: TinhDTO[] | undefined;
+
+    constructor(data?: IGetTinhPageOut) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.total = _data["total"];
+            if (Array.isArray(_data["tinhs"])) {
+                this.tinhs = [] as any;
+                for (let item of _data["tinhs"])
+                    this.tinhs.push(TinhDTO.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): GetTinhPageOut {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetTinhPageOut();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["total"] = this.total;
+        if (Array.isArray(this.tinhs)) {
+            data["tinhs"] = [];
+            for (let item of this.tinhs)
+                data["tinhs"].push(item.toJSON());
+        }
+        return data;
+    }
+
+    clone(): GetTinhPageOut {
+        const json = this.toJSON();
+        let result = new GetTinhPageOut();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IGetTinhPageOut {
+    total: number;
+    tinhs: TinhDTO[] | undefined;
 }
 
 export class AuthenticateModel implements IAuthenticateModel {
@@ -4021,7 +4299,7 @@ export class AuthenticateModel implements IAuthenticateModel {
         data["userNameOrEmailAddress"] = this.userNameOrEmailAddress;
         data["password"] = this.password;
         data["rememberClient"] = this.rememberClient;
-        return data; 
+        return data;
     }
 
     clone(): AuthenticateModel {
@@ -4075,7 +4353,7 @@ export class AuthenticateResultModel implements IAuthenticateResultModel {
         data["encryptedAccessToken"] = this.encryptedAccessToken;
         data["expireInSeconds"] = this.expireInSeconds;
         data["userId"] = this.userId;
-        return data; 
+        return data;
     }
 
     clone(): AuthenticateResultModel {
@@ -4124,7 +4402,7 @@ export class ExternalLoginProviderInfoModel implements IExternalLoginProviderInf
         data = typeof data === 'object' ? data : {};
         data["name"] = this.name;
         data["clientId"] = this.clientId;
-        return data; 
+        return data;
     }
 
     clone(): ExternalLoginProviderInfoModel {
@@ -4174,7 +4452,7 @@ export class ExternalAuthenticateModel implements IExternalAuthenticateModel {
         data["authProvider"] = this.authProvider;
         data["providerKey"] = this.providerKey;
         data["providerAccessCode"] = this.providerAccessCode;
-        return data; 
+        return data;
     }
 
     clone(): ExternalAuthenticateModel {
@@ -4228,7 +4506,7 @@ export class ExternalAuthenticateResultModel implements IExternalAuthenticateRes
         data["encryptedAccessToken"] = this.encryptedAccessToken;
         data["expireInSeconds"] = this.expireInSeconds;
         data["waitingForActivation"] = this.waitingForActivation;
-        return data; 
+        return data;
     }
 
     clone(): ExternalAuthenticateResultModel {
@@ -4300,7 +4578,7 @@ export class CreateUserDto implements ICreateUserDto {
                 data["roleNames"].push(item);
         }
         data["password"] = this.password;
-        return data; 
+        return data;
     }
 
     clone(): CreateUserDto {
@@ -4384,7 +4662,7 @@ export class UserDto implements IUserDto {
                 data["roleNames"].push(item);
         }
         data["id"] = this.id;
-        return data; 
+        return data;
     }
 
     clone(): UserDto {
@@ -4436,7 +4714,7 @@ export class Int64EntityDto implements IInt64EntityDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        return data; 
+        return data;
     }
 
     clone(): Int64EntityDto {
@@ -4487,7 +4765,7 @@ export class RoleDtoListResultDto implements IRoleDtoListResultDto {
             for (let item of this.items)
                 data["items"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 
     clone(): RoleDtoListResultDto {
@@ -4530,7 +4808,7 @@ export class ChangeUserLanguageDto implements IChangeUserLanguageDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["languageName"] = this.languageName;
-        return data; 
+        return data;
     }
 
     clone(): ChangeUserLanguageDto {
@@ -4576,7 +4854,7 @@ export class ChangePasswordDto implements IChangePasswordDto {
         data = typeof data === 'object' ? data : {};
         data["currentPassword"] = this.currentPassword;
         data["newPassword"] = this.newPassword;
-        return data; 
+        return data;
     }
 
     clone(): ChangePasswordDto {
@@ -4626,7 +4904,7 @@ export class ResetPasswordDto implements IResetPasswordDto {
         data["adminPassword"] = this.adminPassword;
         data["userId"] = this.userId;
         data["newPassword"] = this.newPassword;
-        return data; 
+        return data;
     }
 
     clone(): ResetPasswordDto {
@@ -4682,7 +4960,7 @@ export class UserDtoPagedResultDto implements IUserDtoPagedResultDto {
             for (let item of this.items)
                 data["items"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 
     clone(): UserDtoPagedResultDto {
