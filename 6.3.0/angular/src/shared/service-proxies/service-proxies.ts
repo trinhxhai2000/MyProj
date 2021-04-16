@@ -505,6 +505,7 @@ export class HuyenServiceProxy {
      * @return Success
      */
     huyenNameExistInTinh(tinhId: number | undefined, huyenName: string | null | undefined): Observable<boolean> {
+        console.log("huyenNameExistInTinh service : tinhId : " + tinhId + ", huyenName : " + huyenName)
         let url_ = this.baseUrl + "/api/services/app/Huyen/huyenNameExistInTinh?";
         if (tinhId === null)
             throw new Error("The parameter 'tinhId' cannot be null.");
@@ -1729,7 +1730,6 @@ export class TinhServiceProxy {
      * @return Success
      */
     tinhNameExist(name: string | null | undefined): Observable<boolean> {
-        console.log("Tinh Name Exist ?" , name);
         let url_ = this.baseUrl + "/api/services/app/Tinh/tinhNameExist?";
         if (name !== undefined && name !== null)
             url_ += "name=" + encodeURIComponent("" + name) + "&";

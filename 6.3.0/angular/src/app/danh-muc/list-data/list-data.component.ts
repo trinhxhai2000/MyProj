@@ -8,14 +8,8 @@ import {  Router } from '@angular/router';
 })
 export class ListDataComponent implements OnInit {
 
-  tinhs: TinhDTO[] = [];
-  huyens: HuyenDTO[] = [];
   tinhId = -1;
-
   constructor(
-    private tinhService: TinhServiceProxy,
-    private huyenService: HuyenServiceProxy,
-    private router : Router
   ) { }
 
   ngOnInit(): void {
@@ -23,7 +17,5 @@ export class ListDataComponent implements OnInit {
   onTinhSelect(tinhId){
     this.tinhId = tinhId;
   }
-
-
 
 }

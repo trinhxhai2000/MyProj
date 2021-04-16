@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder,FormGroup, AbstractControl, ValidationErrors, Validators } from '@angular/forms'
-import { ModifingHuyenInput , HuyenServiceProxy , TinhServiceProxy, TinhDTO, HuyenDTO } from '@shared/service-proxies/service-proxies';
-import { ActivatedRoute } from '@angular/router';
+import { ModifingHuyenInput , HuyenServiceProxy , TinhServiceProxy, TinhDTO } from '@shared/service-proxies/service-proxies';
 import { Location } from '@angular/common';
-import { NoWhitespaceValidator } from '../validators/no-whitespaces.validator';
+import { HuyenNameChange_HuyenNameValidator } from '../validators/no-whitespaces.validator';
 
-import { Observable, of, Subject, timer } from "rxjs";
-import { debounceTime, delay, distinctUntilChanged, filter, map, startWith, switchMap, take, tap } from "rxjs/operators";
+import { Observable, of, Subject,  } from "rxjs";
+import { filter, map, startWith, switchMap, take, tap } from "rxjs/operators";
 
 @Component({
   selector: 'app-add-huyen',
@@ -25,19 +24,12 @@ export class AddHuyenComponent implements OnInit {
 
   addingForm: FormGroup;
   formSubmit$ = new Subject<any>();
-  curTinhId:number = null;
 
 
   tinhs: TinhDTO[]
   ngOnInit(): void {
     this.loadData()
-     /*
-    validate
-      name :
-        bao gồm a-zA-Z có thể có dấu và số, không được bắt đầu bằng số !
-        xử lí trường hợp rỗng chỉ toàn khoảng trắng
-        kiểm tra xem đã tồn tại tên này chưa !
-    */
+
     this.addingForm = this.fb.group(
       {
         name: [
@@ -45,20 +37,29 @@ export class AddHuyenComponent implements OnInit {
           Validators.compose([
             Validators.pattern(/^[a-zA-Za-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+[a-zA-Za-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ 0-9]*$/i),
           ]),
-          // validate xem huyện này đã tồn tại trong tỉnh hay chưa
-          this.validateHyyenNameFromAPI1.bind(this)
         ],
         tinhId: [
           null,
           Validators.compose([
             Validators.required,
           ]),
-        // validate xem huyện này đã tồn tại trong tỉnh hay chưa
-          this.validateHyyenNameFromAPI2.bind(this)
 
         ]
       }
     );
+
+    /*
+      Khi huyện thay đổi + tỉnh đã có giá trị => validate xem tỉnh hiện tại đã có huyện vừa thay đổi chưa
+      Khi tỉnh thay đổi + huyện đã có giá trị => validate xem tỉnh hiện tại đã có huyện vừa thay đổi chưa
+    */
+
+    this.addingForm.controls['tinhId'].valueChanges.subscribe(
+      val => {
+        const nameCtrl = this.addingForm.controls['name'];
+        nameCtrl.setAsyncValidators(HuyenNameChange_HuyenNameValidator.createValidator(this.huyenService,val));
+        nameCtrl.updateValueAndValidity();
+      }
+    )
 
 
     this.formSubmit$
@@ -78,9 +79,7 @@ export class AddHuyenComponent implements OnInit {
 
   loadData(){
     this.tinhService.getAllTinh().subscribe(
-      res=>{
-        this.tinhs = res
-      }
+      res => this.tinhs = res
     )
   }
 
@@ -108,8 +107,6 @@ export class AddHuyenComponent implements OnInit {
     const huyenName = control.value;
     if(tinhId == null || huyenName == null) return of(null);
     return this.huyenService.huyenNameExistInTinh(tinhId,huyenName).pipe(
-      debounceTime(800),
-      distinctUntilChanged(),
       map(result => {
         if (!result) {
           if (this.addingForm.controls["tinhId"].hasError('huyenNameExistInTinh')){
@@ -120,7 +117,8 @@ export class AddHuyenComponent implements OnInit {
         return {
           huyenNameExistInTinh: true
         };
-      })
+      }),
+      tap(_=>console.log(_))
     )
   }
 
@@ -130,7 +128,8 @@ export class AddHuyenComponent implements OnInit {
     const tinhId = control.value;
     const huyenName = this.addingForm.value.name;
     if(tinhId == null || huyenName == null ) return of(null);
-    return this.huyenService.huyenNameExistInTinh(tinhId,huyenName).pipe(
+
+    var tmp =  this.huyenService.huyenNameExistInTinh( tinhId,huyenName ).pipe(
       map(
         result => {
         if (!result) {
@@ -143,8 +142,11 @@ export class AddHuyenComponent implements OnInit {
             huyenNameExistInTinh: true
           };
       }
-      )
+      ),
+      tap(_=>console.log(_))
     )
+    console.log(tmp);
+    return tmp;
 
   }
 

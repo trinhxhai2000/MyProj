@@ -1,55 +1,22 @@
 list data
 
+<nz-page-header class="site-page-header"
+  [nzTitle]="'Danh huyện tỉnh mục'"
+  [nzSubtitle]="' '"
+>
+  <nz-page-header-title>Title</nz-page-header-title>
+  <nz-page-header-subtitle>This is a subtitle</nz-page-header-subtitle>
+  <nz-page-header-extra>
+    <button nz-button [routerLink]="'../add-tinh'" >Thêm tỉnh</button>
+    <!--<button nz-button [routerLink]="'../add-huyen'" >Thêm huyện</button>-->
+    <button nz-button [routerLink]="'../add-huyen'" >Thêm huyện</button>
+  </nz-page-header-extra>
+  <nz-page-header-content>
+  </nz-page-header-content>
+</nz-page-header>
+
+
 <app-tinh (onTinhSelectEmitter)="onTinhSelect($event)">
 </app-tinh>
 <app-huyen [tinhId]="tinhId" >
 </app-huyen>
-
-<!--
-<div class="site-page-header-ghost-wrapper">
-  <nz-page-header [nzGhost]="false" [nzTitle]="'Tỉnh-Huyện'" [nzSubtitle]="''" >
-    <nz-page-header-title>Title</nz-page-header-title>
-    <nz-page-header-subtitle>This is a subtitle</nz-page-header-subtitle>
-    <nz-page-header-extra>
-      <button nz-button nzType="default"
-        [routerLink]="'../add-tinh'"
-      > Thêm Tỉnh </button>
-      <button nz-button nzType="default"
-        [routerLink]="'../add-huyen'"
-      > Thêm huyện </button>
-    </nz-page-header-extra>
-  </nz-page-header>
-</div>
-
-
-<h3 [ngStyle]="{ margin: '16px 0' }">Tỉnh</h3>
-    <ul nz-list [nzDataSource]="tinhs" nzBordered nzSize="large">
-      <li nz-list-item *ngFor="let item of tinhs" nzNoFlex (click)="selectTinh(item.tinhId)">
-        <ul nz-list-item-actions>
-            <nz-list-item-action>
-              <a routerLink="./{{item.tinhId}}">edit</a>
-            </nz-list-item-action>
-            <nz-list-item-action>
-              <button nz-button nzType="primary" nzDanger (click)="deleteTinh(item.tinhId)">Xóa</button>
-            </nz-list-item-action>
-        </ul>
-        {{ item.name }}
-      </li>
-    </ul>
-
-    <h3 [ngStyle]="{ margin: '16px 0' }">Huyện</h3>
-    <ul nz-list [nzDataSource]="huyens" nzBordered nzSize="large">
-      <li nz-list-item *ngFor="let item of huyens" nzNoFlex >
-        <ul nz-list-item-actions>
-          <nz-list-item-action>
-              <a routerLink="../huyen/{{item.id}}">edit</a>
-            </nz-list-item-action>
-            <nz-list-item-action>
-              <button nz-button nzType="primary" nzDanger (click)="deleteHuyen(item.id)">Xóa</button>
-            </nz-list-item-action>
-        </ul>
-        {{ item.name }}
-      </li>
-    </ul>
-
--->

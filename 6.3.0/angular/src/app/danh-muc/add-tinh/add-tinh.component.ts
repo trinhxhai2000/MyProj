@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { TinhDTO , TinhServiceProxy } from '@shared/service-proxies/service-proxies';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { FormBuilder,FormGroup, AbstractControl, ValidationErrors, Validators } from '@angular/forms'
-import { NoWhitespaceValidator, IsUserIdFreeValidator } from '../validators/no-whitespaces.validator';
+import { FormBuilder,FormGroup, Validators } from '@angular/forms'
+import { TinhNameExistValidator } from '../validators/no-whitespaces.validator';
 
-import { Observable, of, Subject, timer } from "rxjs";
-import { delay, filter, map, startWith, switchMap, take, tap } from "rxjs/operators";
+import { Subject } from "rxjs";
+import {filter, startWith, switchMap, take, tap } from "rxjs/operators";
 
 @Component({
   selector: 'app-add-tinh',
@@ -40,15 +40,15 @@ export class AddTinhComponent implements OnInit {
         ? thường thì ng ta sẽ check cái này ở api hay server ?
 
     */
+
     this.addingForm = this.fb.group({
       name: [
         "",
-       Validators.compose([
+        Validators.compose([
           Validators.pattern(/^[a-zA-Za-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+[a-zA-Za-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ 0-9]*$/i),
        ]),
-       [IsUserIdFreeValidator.createValidator(this.tinhService)]
+        TinhNameExistValidator.createValidator(this.tinhService)
       ],
-
       tttu: false,
     });
 
@@ -68,7 +68,6 @@ export class AddTinhComponent implements OnInit {
       .subscribe(validationSuccessful => this.submitForm());
   }
 
-
   submitForm(): void {
 
     const input = new TinhDTO();
@@ -82,23 +81,5 @@ export class AddTinhComponent implements OnInit {
   goBack(): void {
     this.location.back();
   }
-
-  // validateTinhNameFromAPI(
-  //   control: AbstractControl
-  // ): Observable<ValidationErrors | null> {
-
-  //   return this.tinhService.tinhNameExist(control.value).pipe(
-  //     map(result => {
-  //       if (!result) {
-  //         return null;
-  //       }
-  //       return {
-  //         tinhNameExist: true
-  //       };
-  //     })
-  //   );
-
-
-  // }
 
 }

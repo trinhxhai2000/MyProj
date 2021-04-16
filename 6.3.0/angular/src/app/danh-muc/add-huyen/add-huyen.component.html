@@ -6,12 +6,17 @@
             nz-input formControlName="name" required
         />
       </nz-form-control>
+      <ng-template #nameErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('HuyenNameExistInTinh')">
+          Huyện đã tồn tại trong tỉnh !
+        </ng-container>
+      </ng-template>
     </nz-form-item>
     <nz-form-item>
         <nz-form-label [nzSpan]="5">Tỉnh </nz-form-label>
         <nz-form-control [nzSpan]="12" [nzErrorTip]="nameErrorTpl" >
 
-            <nz-select [(ngModel)]="curTinhId"  formControlName="tinhId">
+            <nz-select  formControlName="tinhId">
                 <nz-option *ngFor="let tinh of tinhs" nzValue="{{tinh.tinhId}}" nzLabel="{{tinh.name}}"></nz-option>
               </nz-select>
 
@@ -31,17 +36,3 @@
     </nz-form-item>
 
 </form>
-
-<ng-template #nameErrorTpl let-control>
-  <ng-container *ngIf="control.hasError('huyenNameExistInTinh')">
-      Huyện này đã có trong tỉnh đã chọn !
-  </ng-container>
-  <ng-container *ngIf="control.hasError('pattern')">
-    Tên bắt đầu bằng các kí tự ('a-z, 'A'-'Z') và có 2 kí tự trở lên
-  </ng-container>
-</ng-template>
-
-<div *ngIf="addingForm.hasError('huyenNameExistInTinh')">
-  Huyện này đã có trong tỉnh đã chọn !
-</div>
-

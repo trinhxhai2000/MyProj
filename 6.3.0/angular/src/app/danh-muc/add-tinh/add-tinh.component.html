@@ -1,7 +1,7 @@
-<form nz-form sub [formGroup]="addingForm" (ngSubmit)="formSubmit$.next()" >
+<form nz-form sub  [formGroup]="addingForm" (ngSubmit)="formSubmit$.next()" >
     <nz-form-item>
-      <nz-form-label [nzSpan]="5">Tên tỉnh</nz-form-label>
-      <nz-form-control [nzSpan]="12" [nzErrorTip]="nameErrorTpl" >
+      <nz-form-label  [nzSpan]="5">Tên tỉnh</nz-form-label>
+      <nz-form-control nzHasFeedback [nzSpan]="12" [nzErrorTip]="nameErrorTpl" >
         <input nz-input formControlName="name" />
       </nz-form-control>
 
@@ -12,16 +12,14 @@
         <ng-container *ngIf="control.hasError('tinhNameExist')">
             Tên tỉnh đã tồn tại !
         </ng-container>
-      </ng-template>
+    </ng-template>
 
     </nz-form-item>
 
     <nz-form-item>
         <nz-form-label [nzSpan]="5">Trực thuộc trung ương </nz-form-label>
         <nz-form-control [nzSpan]="12" >
-            <nz-switch
-                formControlName="tttu"
-            >
+            <nz-switch formControlName="tttu">
             </nz-switch>
         </nz-form-control>
     </nz-form-item>
@@ -39,58 +37,7 @@
           </nz-form-control>
     </nz-form-item>
 
-<pre>{{ addingForm.get("name")?.errors | json }}</pre>
-
-<pre>{{ addingForm.get('name').hasError('tinhNameExist') }}</pre>
-
 <!--
-{{addingForm.value | json}}
-<small
-        *ngIf="addingForm.get('name').hasError('pattern')"
->
-        <h1>Meh</h1>
-</small>
-
--->
-
-<!-- Template form
-
-<p>add-tinh works!</p>
-<h2>Thêm tỉnh : </h2>
-
-{{curTinh | json }}
-<form nz-form sub #addingForm="ngForm" (submit)="onSubmit(addingForm)" >
-    <nz-form-item>
-      <nz-form-label [nzSpan]="5">Tên tỉnh</nz-form-label>
-      <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Input is required">
-        <input
-            nz-input [(ngModel)]="curTinh.name" name="name" required
-
-        />
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-        <nz-form-label [nzSpan]="5">Trực thuộc trung ương </nz-form-label>
-        <nz-form-control [nzSpan]="12" >
-            <nz-switch
-                [(ngModel)]="curTinh.TTTU"
-                name = "tttu"
-            >
-
-            </nz-switch>
-        </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item >
-        <nz-form-control [nzSpan]="12" [nzOffset]="5">
-            <button
-                nz-button nzType="primary"
-                type="submit"
-            >
-            Thêm
-            </button>
-          </nz-form-control>
-    </nz-form-item>
-
-
+<pre>{{ addingForm.get("name")?.errors | json }}</pre>
+<pre>{{ addingForm.get("name")?.hasError('tinhNameExist') | json }}</pre>
 -->

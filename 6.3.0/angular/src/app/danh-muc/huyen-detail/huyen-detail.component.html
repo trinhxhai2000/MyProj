@@ -1,20 +1,31 @@
 <p>huyen-detail works!</p>
-{{huyen | json }}
-<form nz-form sub #addingForm="ngForm" (submit)="onSubmit(addingForm)" >
+<form nz-form sub [formGroup]="editingForm" (ngSubmit)="formSubmit$.next()" >
     <nz-form-item>
       <nz-form-label [nzSpan]="5">Tên tỉnh</nz-form-label>
-      <nz-form-control nzHasFeedback [nzSpan]="12" nzErrorTip="Input is required">
+      <nz-form-control nzHasFeedback [nzSpan]="12" [nzErrorTip]="nameErrorTpl">
         <input
-            nz-input [(ngModel)]="huyen.name" name="name" required
+            nz-input required
+            formControlName="name"
         />
       </nz-form-control>
+      <ng-template #nameErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('HuyenNameExistInTinh')">
+          Huyện đã tồn tại trong tỉnh !
+        </ng-container>
+      </ng-template>
+
+      <ng-template #nameErrorTpl >
+        <ng-container *ngIf="editingForm.get('name').hasError('HuyenNameExistInTinh')">
+          Huyện đã tồn tại trong tỉnh !
+        </ng-container>
+      </ng-template>
     </nz-form-item>
     <nz-form-item>
         <nz-form-label [nzSpan]="5"> Tỉnh </nz-form-label>
         <nz-form-control [nzSpan]="12" >
-            <nz-select [(ngModel)]="huyen.tinhId" name="tinhId">
-                <nz-option *ngFor="let tinh of tinhs" nzValue="{{tinh.tinhId}}" nzLabel="{{tinh.name}}"></nz-option>
-              </nz-select>
+            <nz-select formControlName="tinhId" [(ngModel)]="selectedTinh">
+                <nz-option *ngFor="let tinh of tinhs" [nzValue]="tinh" [nzLabel]="tinh.name" [nzSelected]="tinh.tinhId == huyen.tinhId"></nz-option>
+            </nz-select>
         </nz-form-control>
     </nz-form-item>
 
@@ -23,8 +34,24 @@
             <button
                 nz-button nzType="primary"
                 type="submit"
+                [disabled]="editingForm.invalid"
             >
             Update
             </button>
           </nz-form-control>
     </nz-form-item>
+</form>
+<!--
+{{huyen | json }}
+<br>
+selectedTinh :
+{{ selectedTinh | json}}
+<br>
+name errors :
+{{editingForm.get('name').errors | json}}
+
+<br>
+the fuck
+{{editingForm.get('name').hasError('HuyenNameExistInTinh')}}
+
+-->

@@ -67,14 +67,15 @@ export class HuyenComponent implements OnInit {
   editHuyen(huyenId:number){
     this.modalService.create({
       nzTitle: "Modal Title shiet 2",
-      nzOnOk: ()=>{ console.log("shiet OK"); },
+      nzOnOk: (item)=>{ console.log("shiet OK", item.submitForm()); return true},
       nzCancelText: "Bỏ đi",
       nzOkText: "OK bb",
       nzKeyboard: true,
       nzContent: HuyenDetailComponent,
       nzComponentParams: { huyenId : huyenId }
     }).afterClose.subscribe(
-      ()=>{
+      (result)=>{
+      if(result)
         this.loadDataFromServer(this.pageIndex, this.pageSize);
       }
     )
